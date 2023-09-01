@@ -1,0 +1,547 @@
+create database criminal_DBMS;
+use criminal_DBMS;
+
+create table CRIMINAL (  
+ Criminal_ID varchar(10) not null,
+ Health_condition text,
+ Blood_group varchar(3),
+ Nationality varchar(20),
+ Gender varchar(10) not null,
+ Criminal_name varchar(50)not null,
+ Date_of_birth date,
+ Age int default null,
+ Unique_circumstances text,
+ Weight float, 
+ Height float, 
+ Alias varchar(50),
+ Photo text,
+ Country varchar(20),
+ Current_status varchar(50) not null,
+ primary key(Criminal_ID)
+);
+
+delimiter //
+create trigger calculate_age before insert on CRIMINAL
+for each row
+begin
+    set new.Age = year(CURDATE()) - year(new.Date_of_birth);
+end;
+//
+delimiter ;
+
+create table REHABILITATION (
+ Rehabilitation_ID varchar(10) not null,
+ Criminal_ID varchar(10) , 
+ Institution_name text,
+ Date_admitted date,
+ Additional_details text,
+ Duration_months decimal(3,1),
+ primary key(Rehabilitation_ID),
+ constraint fk_criminal Foreign key(Criminal_ID) references CRIMINAL(Criminal_ID) on update cascade on delete set null
+ );
+
+ create table CRIMINAL_FINGERPRINT (
+ Criminal_ID varchar(10) , 
+ Fingerprint text,
+ constraint fk_criminalID Foreign key(Criminal_ID) references CRIMINAL(Criminal_ID) on update cascade on delete set null
+ );
+ 
+ create table CRIMINAL_ADDRESS (
+ Criminal_ID varchar(10), 
+ Province varchar(50),
+ Street varchar(50),
+ City varchar(50),
+ constraint fk_criminal_id Foreign key(Criminal_ID) references CRIMINAL(Criminal_ID) on update cascade on delete set null
+ );
+ 
+ -- edits -------------------------------------------------
+--    drop database criminal_dbms;
+ -- --------------------------------------------------------
+ 
+ -- adding entries to CRIMINAL table
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1001', 'No known health issues', 'A+', 'American', 'Male', 'John Doe', '1990-05-15', 'None', 180.5, 6.2, 'Unknown', 'photo1.jpg', 'USA', 'In jail');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1002', 'Asthma', 'O-', 'Canadian', 'Female', 'Jane Smith', '1985-09-23', 'Tattoo on right arm', 150.0, 5.6, 'Jess', 'photo2.jpg', 'Canada', 'Wanted');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1003', 'Diabetes', 'B+', 'Mexican', 'Male', 'Carlos Rodriguez', '1978-12-10', 'Scars on face', 200.0, 5.9, 'Charlie', 'photo3.jpg', 'Mexico', 'In custody');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1004', 'No known health issues', 'AB-', 'British', 'Male', 'David Johnson', '1995-02-28', 'None', 170.0, 5.11, 'Dave', 'photo4.jpg', 'UK', 'Wanted');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1005', 'High Blood pressure', 'A-', 'French', 'Female', 'Sophie Martin', '1987-07-03', 'None', 140.0, 5.5, 'None', 'photo5.jpg', 'France', 'In jail');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1006', 'No known health issues', 'O+', 'German', 'Male', 'Michael Schmidt', '1980-11-20', 'Tattoo on left forearm', 190.0, 6.0, 'Mike', 'photo6.jpg', 'Germany', 'Wanted');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1007', 'No known health issues', 'A+', 'Russian', 'Male', 'Ivan Petrov', '1992-04-12', 'None', 175.0, 5.8, 'None', 'photo7.jpg', 'Russia', 'In custody');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1008', 'High blood pressure', 'B-', 'Chinese', 'Female', 'Ling Zhang', '1983-08-07', 'Scar on right hand', 160.0, 5.7, 'Lucy', 'photo8.jpg', 'China', 'Wanted');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1009', 'No known health issues', 'AB+', 'Japanese', 'Male', 'Takashi Tanaka', '1991-01-25', 'None', 165.0, 5.10, 'Taka', 'photo9.jpg', 'Japan', 'In custody');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1010', 'Epilepsy', 'A-', 'Australian', 'Female', 'Emily Davis', '1989-06-15', 'None', 145.0, 5.4, 'Em', 'photo10.jpg', 'Australia', 'Wanted');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1011', 'Anxiety disorder', 'B+', 'Italian', 'Male', 'Marco Rossi', '1982-09-08', 'None', 175.5, 5.9, 'None', 'photo11.jpg', 'Italy', 'In custody');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1012', 'No known health issues', 'O-', 'Spanish', 'Female', 'Elena Garcia', '1986-06-21', 'Tattoo on left shoulder', 150.0, 5.6, 'Lena', 'photo12.jpg', 'Spain', 'Wanted');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1013', 'No known health issues', 'A+', 'Brazilian', 'Male', 'Luiz Silva', '1993-03-14', 'None', 185.0, 6.1, 'None', 'photo13.jpg', 'Brazil', 'In jail');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1014', 'High cholesterol', 'AB-', 'Dutch', 'Female', 'Sophia van der Veen', '1984-12-30', 'Scar on right leg', 160.0, 5.7, 'Sophie', 'photo14.jpg', 'Netherlands', 'Wanted');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1015', 'No known health issues', 'A-', 'Swedish', 'Male', 'Erik Andersson', '1977-07-17', 'None', 175.0, 6.0, 'None', 'photo15.jpg', 'Sweden', 'In jail');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1016', 'Depression', 'O+', 'Norwegian', 'Female', 'Mia Olsen', '1988-02-04', 'Tattoo on back', 145.0, 5.4, 'None', 'photo16.jpg', 'Norway', 'Wanted');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1017', 'Asthma', 'B-', 'Greek', 'Male', 'Nikos Papadopoulos', '1990-11-11', 'None', 180.0, 6.2, 'None', 'photo17.jpg', 'Greece', 'In custody');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1018', 'No known health issues', 'AB+', 'South Korean', 'Female', 'Ji-hyun Kim', '1994-05-29', 'Tattoo on left wrist', 155.0, 5.5, 'Ji', 'photo18.jpg', 'South Korea', 'Wanted');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1019', 'No known health issues', 'A-', 'Indian', 'Male', 'Raj Patel', '1981-08-03', 'None', 170.0, 5.11, 'None', 'photo19.jpg', 'India', 'In jail');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1020', 'High blood pressure', 'O+', 'Chinese', 'Female', 'Xia Wang', '1989-04-18', 'Scar on left cheek', 140.0, 5.6, 'Sherry', 'photo20.jpg', 'China', 'Wanted');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1021', 'No known health issues', 'A+', 'Russian', 'Female', 'Olga Petrova', '1996-12-08', 'None', 150.0, 5.5, 'None', 'photo21.jpg', 'Russia', 'In custody');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1022', 'High cholesterol', 'O-', 'Japanese', 'Male', 'Hiroshi Tanaka', '1983-03-27', 'Scar on left arm', 175.0, 6.0, 'Hiro', 'photo22.jpg', 'Japan', 'Wanted');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1023', 'No known health issues', 'AB-', 'Australian', 'Female', 'Sophie Williams', '1985-08-14', 'None', 140.0, 5.4, 'None', 'photo23.jpg', 'Australia', 'In jail');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1024', 'Epilepsy', 'A-', 'Canadian', 'Male', 'David Mitchell', '1990-01-19', 'Tattoo on chest', 185.0, 6.2, 'Dave', 'photo24.jpg', 'Canada', 'Wanted');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1025', 'No known health issues', 'B+', 'German', 'Female', 'Anna Schneider', '1987-06-25', 'Scar on right leg', 155.0, 5.6, 'None', 'photo25.jpg', 'Germany', 'In custody');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1026', 'Asthma', 'O+', 'Mexican', 'Male', 'Javier Gomez', '1984-10-30', 'None', 180.0, 6.1, 'Javi', 'photo26.jpg', 'Mexico', 'Wanted');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1027', 'No known health issues', 'A-', 'British', 'Female', 'Emma Johnson', '1993-05-12', 'None', 150.0, 5.5, 'None', 'photo27.jpg', 'UK', 'In jail');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1028', 'Depression', 'AB+', 'French', 'Male', 'Jean Dupont', '1988-02-08', 'Tattoo on left shoulder', 175.0, 5.9, 'None', 'photo28.jpg', 'France', 'Wanted');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1029', 'No known health issues', 'B-', 'Chinese', 'Female', 'Mei Li', '1992-07-19', 'None', 140.0, 5.4, 'None', 'photo29.jpg', 'China', 'In custody');
+
+INSERT INTO CRIMINAL (Criminal_ID, Health_condition, Blood_group, Nationality, Gender, Criminal_name, Date_of_birth, Unique_circumstances, Weight, Height, Alias, Photo, Country, Current_status)
+VALUES ('C1030', 'High blood pressure', 'O-', 'Swiss', 'Male', 'Lukas Müller', '1979-11-26', 'Scar on right arm', 190.0, 6.0, 'None', 'photo30.jpg', 'Switzerland', 'Wanted');
+
+
+
+-- inserting values for the table REHABILITATION
+
+INSERT INTO REHABILITATION (Rehabilitation_ID, Criminal_ID, Institution_name, Date_admitted, Additional_details, Duration_months)
+VALUES('R1001', 'C1005', 'Rehab Center A', '2022-03-15', 'Good progress', 6.5);
+
+INSERT INTO REHABILITATION (Rehabilitation_ID, Criminal_ID, Institution_name, Date_admitted, Additional_details, Duration_months)
+VALUES('R1003', 'C1006', 'Rehab Center A', '2022-02-10', 'Excellent behavior', 8.0);
+
+INSERT INTO REHABILITATION (Rehabilitation_ID, Criminal_ID, Institution_name, Date_admitted, Additional_details, Duration_months)
+VALUES('R1007', 'C1010', 'Rehab Center E', '2022-01-25', 'Participates in group sessions', 6.0);
+
+INSERT INTO REHABILITATION (Rehabilitation_ID, Criminal_ID, Institution_name, Date_admitted, Additional_details, Duration_months)
+VALUES('R1009', 'C1011', 'Rehab Center B', '2022-03-05', 'Cooperative with staff', 7.0);
+
+INSERT INTO REHABILITATION (Rehabilitation_ID, Criminal_ID, Institution_name, Date_admitted, Additional_details, Duration_months)
+VALUES ('R1002', 'C1016', 'Rehab Center B', '2021-11-20', 'Needs counseling', 9.0);
+
+INSERT INTO REHABILITATION (Rehabilitation_ID, Criminal_ID, Institution_name, Date_admitted, Additional_details, Duration_months)
+VALUES('R1004', 'C1018', 'Rehab Center D', '2021-09-05', 'Continuing therapy', 7.5);
+
+INSERT INTO REHABILITATION (Rehabilitation_ID, Criminal_ID, Institution_name, Date_admitted, Additional_details, Duration_months)
+VALUES('R1005', 'C1020', 'Rehab Center C', '2022-04-30', 'Making improvements', 5.0);
+
+INSERT INTO REHABILITATION (Rehabilitation_ID, Criminal_ID, Institution_name, Date_admitted, Additional_details, Duration_months)
+VALUES('R1006', 'C1022', 'Rehab Center C', '2021-10-12', 'Requires close monitoring', 10.0);
+
+INSERT INTO REHABILITATION (Rehabilitation_ID, Criminal_ID, Institution_name, Date_admitted, Additional_details, Duration_months)
+VALUES('R1008', 'C1024', 'Rehab Center E', '2021-08-18', 'Showing improvement', 8.5);
+
+INSERT INTO REHABILITATION (Rehabilitation_ID, Criminal_ID, Institution_name, Date_admitted, Additional_details, Duration_months)
+VALUES('R1010', 'C1028', 'Rehab Center D', '2021-12-15', 'Needs specialized treatment', 9.5);
+
+
+
+
+-- insert values to Fingerprints table 
+
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1001', 'fingerprint1.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1002', null);
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1003', 'fingerprint3.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1004', 'fingerprint4.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1005', 'fingerprint5.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1006', 'fingerprint6.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1007', 'fingerprint7.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1008', null);
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1009', 'fingerprint9.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1010', 'fingerprint10.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1011', 'fingerprint11.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1012', null);
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1013', 'fingerprint13.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1014', 'fingerprint14.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1015', 'fingerprint15.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1016', 'fingerprint16.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1017', 'fingerprint17.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1018', 'fingerprint18.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1019', 'fingerprint19.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1020', null);
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1021', 'fingerprint21.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1022', 'fingerprint22.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1023', null);
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1024', 'fingerprint24.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1025', 'fingerprint25.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1026', 'fingerprint26.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1027', 'fingerprint27.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1028', 'fingerprint28.jpg');
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1029', null);
+
+INSERT INTO CRIMINAL_FINGERPRINT (Criminal_ID, Fingerprint)
+VALUES ('C1030', 'fingerprint30.jpg');
+
+-- inserting address values
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1001', 'California', '123 Main St', 'Los Angeles');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1002', null, null, null);
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1003', 'Mexico City', '789 Oak St', 'Mexico City');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1004', 'London', '101 Maple St', 'London');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1005', 'Paris', '202 Pine St', 'Paris');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1006', 'Berlin', '303 Cedar St', 'Berlin');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1007', 'Moscow', '404 Birch St', 'Moscow');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1008', 'Beijing', '505 Redwood St', 'Beijing');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1009', null, null, null);
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1010', 'Sydney', '707 Spruce St', 'Sydney');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1011', 'Rome', '808 Oak St', 'Rome');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1012', 'Madrid', '909 Pine St', 'Madrid');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1013', 'Rio de Janeiro', '1010 Elm St', 'Rio de Janeiro');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1014', null, null, null);
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1015', 'Stockholm', '1212 Redwood St', 'Stockholm');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1016', 'Oslo', '1313 Sequoia St', 'Oslo');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1017', 'Athens', '1414 Birch St', 'Athens');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1018', 'Seoul', '1515 Oak St', 'Seoul');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1019', null, null, null);
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1020', 'Shanghai', '1717 Cedar St', 'Shanghai');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1021', 'Moscow', '1818 Redwood St', 'Moscow');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1022', 'Tokyo', '1919 Sequoia St', 'Tokyo');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1023', null, null, null);
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1024', 'Toronto', '2121 Oak St', 'Toronto');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1025', 'Berlin', '2222 Pine St', 'Berlin');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1026', 'Mexico City', '2323 Cedar St', 'Mexico City');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1027', 'London', '2424 Redwood St', 'London');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1028', 'Paris', '2525 Sequoia St', 'Paris');
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1029', null, null, null);
+
+INSERT INTO CRIMINAL_ADDRESS (Criminal_ID, Province, Street, City)
+VALUES ('C1030', 'Zurich', '2727 Oak St', 'Zurich');
+
+    
+  
+-- update criminal table 
+
+update CRIMINAL
+set Health_condition = 'Allergies', Blood_group = 'A-', Nationality = 'Spanish', Gender = 'Male', Criminal_name = 'Juan Gonzales', Date_of_birth = '1986-03-10', Unique_circumstances = 'Tattoo on left arm', Weight = 175.0, Height = 5.8, Alias = 'None', Photo = 'photo_updated1.jpg', Country = 'Spain', Current_status = 'In custody'
+where Criminal_ID = 'C1001';
+
+update CRIMINAL
+set Health_condition = 'High Blood pressure', Blood_group = 'A+', Nationality = 'Russian', Gender = 'Male', Criminal_name = 'Sergei Ivanov', Date_of_birth = '1983-06-25', Unique_circumstances = 'None', Weight = 190.0, Height = 6.1, Alias = 'Serge', Photo = 'photo_updated3.jpg', Country = 'Russia', Current_status = 'In custody'
+where Criminal_ID = 'C1007';
+
+update CRIMINAL
+set Health_condition = 'No known health issues', Blood_group = 'AB-', Nationality = 'Chinese', Gender = 'Female', Criminal_name = 'Li Wei', Date_of_birth = '1989-09-13', Unique_circumstances = 'None', Weight = 155.0, Height = 5.5, Alias = 'Lily', Photo = 'photo_updated4.jpg', Country = 'China', Current_status = 'Wanted'
+where Criminal_ID = 'C1008';
+
+update CRIMINAL
+set Health_condition = 'Depression', Blood_group = 'O-', Nationality = 'Greek', Gender = 'Male', Criminal_name = 'Nikos Papadakis', Date_of_birth = '1981-12-04', Unique_circumstances = 'Tattoo on right arm', Weight = 180.0, Height = 6.2, Alias = 'None', Photo = 'photo_updated5.jpg', Country = 'Greece', Current_status = 'In custody'
+where Criminal_ID = 'C1017';
+
+update CRIMINAL
+SET Health_condition = 'No known health issues', Blood_group = 'B-', Nationality = 'South Korean', Gender = 'Female', Criminal_name = 'Ji-eun Kim', Date_of_birth = '1985-04-27', Unique_circumstances = 'None', Weight = 150.0, Height = 5.6, Alias = 'Jenny', Photo = 'photo_updated6.jpg', Country = 'South Korea', Current_status = 'Wanted'
+where Criminal_ID = 'C1018';
+
+update CRIMINAL
+set Health_condition = 'No known health issues', Blood_group = 'AB+', Nationality = 'Indian', Gender = 'Male', Criminal_name = 'Raj Kapoor', Date_of_birth = '1987-11-30', Unique_circumstances = 'None', Weight = 175.0, Height = 6.0, Alias = 'None', Photo = 'photo_updated7.jpg', Country = 'India', Current_status = 'In custody'
+where Criminal_ID = 'C1019';
+
+update CRIMINAL
+set Health_condition = 'High blood pressure', Blood_group = 'A+', Nationality = 'Swiss', Gender = 'Male', Criminal_name = 'Lukas Weber', Date_of_birth = '1990-02-15', Unique_circumstances = 'None', Weight = 185.0, Height = 5.9, Alias = 'None', Photo = 'photo_updated8.jpg', Country = 'Switzerland', Current_status = 'Wanted'
+where Criminal_ID = 'C1030';
+
+update CRIMINAL
+set Health_condition = 'No known health issues', Blood_group = 'O+', Nationality = 'American', Gender = 'Female', Criminal_name = 'Jennifer White', Date_of_birth = '1988-07-12', Unique_circumstances = 'Tattoo on left arm', Weight = 155.0, Height = 5.7, Alias = 'Jenny', Photo = 'photo_updated9.jpg', Country = 'USA', Current_status = 'In custody'
+where Criminal_ID = 'C1029';
+
+update CRIMINAL
+set Health_condition = 'Diabetes', Blood_group = 'B+', Nationality = 'Canadian', Gender = 'Male', Criminal_name = 'Robert Anderson', Date_of_birth = '1984-05-20', Unique_circumstances = 'Tattoo on right arm', Weight = 170.0, Height = 5.11, Alias = 'Rob', Photo = 'photo_updated10.jpg', Country = 'Canada', Current_status = 'Wanted'
+where Criminal_ID = 'C1024';
+
+-- delete criminal records
+delete from CRIMINAL where Criminal_ID = 'C1010';
+delete from CRIMINAL where Criminal_ID = 'C1015';
+delete from CRIMINAL where Criminal_ID = 'C1021';
+delete from CRIMINAL where Criminal_ID = 'C1025';
+delete from CRIMINAL where Criminal_ID = 'C1026';
+
+
+
+-- update fingerprint table
+
+update criminal_fingerprint
+set fingerprint = 'new_fingerprint1.jpg'
+where criminal_id = 'c1001';
+
+update criminal_fingerprint
+set fingerprint = 'new_fingerprint2.jpg'
+where criminal_id = 'c1002';
+
+update criminal_fingerprint
+set fingerprint = 'new_fingerprint3.jpg'
+where criminal_id = 'c1003';
+
+update criminal_fingerprint
+set fingerprint = 'new_fingerprint4.jpg'
+where criminal_id = 'c1004';
+
+update criminal_fingerprint
+set fingerprint = 'new_fingerprint5.jpg'
+where criminal_id = 'c1005';
+
+update criminal_fingerprint
+set fingerprint = 'new_fingerprint6.jpg'
+where criminal_id = 'c1006';
+
+update criminal_fingerprint
+set fingerprint = 'new_fingerprint7.jpg'
+where criminal_id = 'c1007';
+
+update criminal_fingerprint
+set fingerprint = 'new_fingerprint8.jpg'
+where criminal_id = 'c1008';
+
+delete from criminal_fingerprint where Criminal_ID = 'C1011';
+delete from criminal_fingerprint where Criminal_ID = 'C1017';
+delete from criminal_fingerprint where Criminal_ID = 'C1023';
+delete from criminal_fingerprint where Criminal_ID = 'C1024';
+delete from criminal_fingerprint where Criminal_ID = 'C1029';
+
+-- update criminal_address table
+
+update criminal_address
+set province = 'new_province4', street = 'new_street4', city = 'new_city4'
+where criminal_id = 'c1004';
+
+update criminal_address
+set province = 'new_province5', street = 'new_street5', city = 'new_city5'
+where criminal_id = 'c1005';
+
+update criminal_address
+set province = 'new_province6', street = 'new_street6', city = 'new_city6'
+where criminal_id = 'c1006';
+
+update criminal_address
+set province = 'new_province7', street = 'new_street7', city = 'new_city7'
+where criminal_id = 'c1007';
+
+update criminal_address
+set province = 'new_province9', street = 'new_street9', city = 'new_city9'
+where criminal_id = 'c1009';
+
+update criminal_address
+set province = 'new_province10', street = 'new_street10', city = 'new_city10'
+where criminal_id = 'c1010';
+    
+    
+delete from criminal_address where Criminal_ID = 'C1002';
+delete from criminal_address where Criminal_ID = 'C1005';
+delete from criminal_address where Criminal_ID = 'C1013';
+
+
+
+-- Update Rehabilitation  table
+
+UPDATE REHABILITATION
+SET Institution_name = 'Rehab Center A (Updated)',
+    Date_admitted = '2022-04-10',
+    Additional_details = 'Excellent progress',
+    Duration_months = 7.0
+WHERE Rehabilitation_ID = 'R1001';
+
+UPDATE REHABILITATION
+SET Institution_name = 'Rehab Center B',
+    Date_admitted = '2022-05-20',
+    Additional_details = 'Active participation in therapy',
+    Duration_months = 8.0
+WHERE Rehabilitation_ID = 'R1007';
+
+UPDATE REHABILITATION
+SET Institution_name = 'Rehab Center C',
+    Date_admitted = '2022-03-01',
+    Additional_details = 'Attending group sessions regularly',
+    Duration_months = 6.5
+WHERE Rehabilitation_ID = 'R1009';
+
+UPDATE REHABILITATION
+SET Institution_name = 'Rehab Center D (Updated)',
+    Date_admitted = '2022-04-15',
+    Additional_details = 'Responding well to therapy',
+    Duration_months = 7.5
+WHERE Rehabilitation_ID = 'R1004';
+
+UPDATE REHABILITATION
+SET Institution_name = 'Rehab Center E',
+    Date_admitted = '2022-05-10',
+    Additional_details = 'Engaging in counseling sessions',
+    Duration_months = 6.0
+WHERE Rehabilitation_ID = 'R1008';
+
+
+-- delete entries from rehabilitation table
+
+DELETE FROM REHABILITATION
+WHERE Rehabilitation_ID = 'R1002';
+
+
+DELETE FROM REHABILITATION
+WHERE Rehabilitation_ID = 'R1005';
+
+
+DELETE FROM REHABILITATION
+WHERE Rehabilitation_ID = 'R1006';
+
