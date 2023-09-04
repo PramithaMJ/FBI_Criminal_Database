@@ -25,6 +25,7 @@ CREATE TABLE CrimeWitnessVictim (
     FOREIGN KEY (CrimeID) REFERENCES Crime(CrimeID),
     FOREIGN KEY (WitnessID) REFERENCES Witness(WitnessID)
 );
+
 -- creating victim table
 CREATE TABLE Victim (
     VictimID VARCHAR(20) PRIMARY KEY,
@@ -37,7 +38,8 @@ CREATE TABLE Victim (
     Street VARCHAR(255),
     City VARCHAR(255),
     Province VARCHAR(255),
-    Country VARCHAR(255)
+    Country VARCHAR(255),
+    AgeAtCrime int
 );
 
 -- creating the contact attribute which is composite and multivalued
@@ -80,6 +82,40 @@ CREATE TABLE VictimCloseContacts (
     FOREIGN KEY (VictimID) REFERENCES Victim(VictimID),
     FOREIGN KEY (CloseContactName) REFERENCES CloseContacts(CloseContactName)
 );
+
+-- deriving attributes from others
+
+DELIMITER //
+
+-- Create a BEFORE INSERT trigger to calculate AgeAtCrime
+CREATE TRIGGER CalculateAgeAtCrime
+BEFORE INSERT ON VictimCrime
+FOR EACH ROW
+BEGIN
+    DECLARE victim_dob DATE;
+    DECLARE crime_date DATETIME;
+    DECLARE age INT;
+
+    -- Retrieve the date of birth of the victim
+    SELECT DateOfBirth INTO victim_dob
+    FROM Victim
+    WHERE VictimID = NEW.VictimID;
+
+    -- Retrieve the date of the crime
+    SELECT DateTime INTO crime_date
+    FROM Crime
+    WHERE CrimeID = NEW.CrimeID;
+
+    -- Calculate the age at the time of the crime
+    SET age = TIMESTAMPDIFF(YEAR, victim_dob, crime_date);
+
+    -- Set the calculated age in the AgeAtCrime column of the Victim table
+    UPDATE Victim
+    SET AgeAtCrime = age
+    WHERE VictimID = NEW.VictimID;
+END;
+//
+DELIMITER ;
 
 
 
