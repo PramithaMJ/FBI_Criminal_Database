@@ -763,9 +763,6 @@ DELETE FROM Crime WHERE CrimeID = 'CR1002';
 DELETE FROM Crime WHERE CrimeID = 'CR1003';
 
 
-
-
-
 -- Insert data into the Witness table
 INSERT INTO Witness (WitnessID, WitnessName, Statement, Description, ContactNumber)
 VALUES
@@ -806,6 +803,17 @@ WHERE WitnessID = 	'W1005';
 DELETE FROM Witness WHERE WitnessID = 'W1001';
 DELETE FROM Witness WHERE WitnessID = 'W1002';
 DELETE FROM Witness WHERE WitnessID = 'W1003';
+
+-- Insert data into the CrimeWitnessVictim table
+INSERT INTO CrimeWitnessVictim (CrimeID, WitnessID)
+VALUES
+    ('CR1004', 'W1004'),
+    ('CR1005', 'W1005'),
+    ('CR1006', 'W1006'),
+    ('CR1007', 'W1007'),
+    ('CR1008', 'W1008'),
+    ('CR1009', 'W1009'),
+    ('CR1011', 'W1010');
 
 
 -- Insert 10 entries into the Victim table
@@ -898,6 +906,17 @@ WHERE VictimID = 'V1005';
 DELETE FROM Victim WHERE VictimID = 'V1001';
 DELETE FROM Victim WHERE VictimID = 'V1002';
 DELETE FROM Victim WHERE VictimID = 'V1003';
+
+
+INSERT INTO VictimCrime (VictimID, CrimeID)
+VALUES
+    ('V1004', 'CR1004'),
+    ('V1005', 'CR1005'),
+    ('V1006', 'CR1006'),
+    ('V1007', 'CR1007'),
+    ('V1008', 'CR1008'),
+    ('V1009', 'CR1009'),
+    ('V1010', 'CR1011');
 
 
 /*
@@ -1094,9 +1113,6 @@ JOIN CloseContacts cc ON v.City = cc.City;
 
 -- This query creates relationships between victims and close contacts
 -- based on a common criteria, such as the same city.
-
-
-
 
 
 INSERT INTO CASES (Case_ID, Current_status, Closed_date, Charges, Law_enforcement_agency, Court_hearings, Opened_date, Assigned_investigator, Duration)
