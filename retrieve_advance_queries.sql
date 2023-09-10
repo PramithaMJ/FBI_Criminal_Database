@@ -124,31 +124,56 @@ WHERE VictimID NOT IN (
 
 
 -- Join Operations (Using User Views):
+create view UV_VICTIM as (select * from Victim);
+select * from UV_VICTIM;
+
+create view UV_CRIME as (select * from Crime);
+select * from UV_CRIME;
+
+create view UV_VICTIM_CRIME as (select * from VictimCrime);
+select * from UV_VICTIM_CRIME;
+
+create view UV_CRIMINAL as (select * from CRIMINAL);
+select * from UV_CRIMINAL;
+
+create view UV_VICTIM_CONTACT as (select * from VictimContact);
+select * from UV_VICTIM_CONTACT;
+
+create view UV_REHABILITATION as (select * from REHABILITATION);
+select * from UV_REHABILITATION;
+
+create view UV_CLOSECONTACT as (select * from CloseContacts);
+select * from UV_CLOSECONTACT;
+
+
 -- 5.Inner Join (Victims and Crimes):
 SELECT V.*, C.*
-FROM Victim AS V
-INNER JOIN VictimCrime AS VC ON V.VictimID = VC.VictimID
-INNER JOIN Crime AS C ON VC.CrimeID = C.CrimeID;
+FROM UV_VICTIM AS V
+INNER JOIN UV_VICTIM_CRIME AS VC ON V.VictimID = VC.VictimID
+INNER JOIN UV_CRIME AS C ON VC.CrimeID = C.CrimeID;
 
 -- 6.Natural Join :
+SELECT *
+FROM UV_VICTIM
+NATURAL JOIN UV_VICTIM_CONTACT;
 
 
 -- 7.Left Outer Join 
 	-- 1.(Victims and VictimContact):
 	SELECT V.*, VC.*
-	FROM Victim AS V
-	LEFT JOIN VictimContact AS VC ON V.VictimID = VC.VictimID;
+	FROM UV_VICTIM AS V
+	LEFT JOIN UV_VICTIM_CONTACT AS VC ON V.VictimID = VC.VictimID;
 
 	-- 2.Retrieve the rehabilitation details of criminals with their name
 	SELECT C.Criminal_name, R.Institution_name, R.Date_admitted
-	FROM CRIMINAL AS C
-	LEFT JOIN REHABILITATION AS R ON C.Criminal_ID = R.Criminal_ID;
+	FROM UV_CRIMINAL AS C
+	LEFT JOIN UV_REHABILITATION AS R ON C.Criminal_ID = R.Criminal_ID;
 
 
 -- 8.Right Outer Join (Victims and VictimContact):
 SELECT V.*, VC.*
-FROM VictimContact AS VC
-RIGHT JOIN Victim AS V ON V.VictimID = VC.VictimID;
+FROM UV_VICTIM_CONTACT AS VC
+RIGHT JOIN UV_VICTIM AS V ON V.VictimID = VC.VictimID;
 
 
 -- 9.Full Outer Join (Victims and VictimContact):
@@ -161,13 +186,13 @@ ON V.VictimID = CC.VictimID;
 */
 
 (SELECT V.*, CC.*
-FROM Victim AS V
-LEFT JOIN CloseContacts AS CC
+FROM UV_VICTIM AS V
+LEFT JOIN UV_CLOSECONTACT AS CC
 ON V.VictimID = CC.VictimID)
 UNION
 -- Retrieve close contacts without corresponding victims
 (SELECT NULL AS VictimID, NULL AS Statement, NULL AS Description, NULL AS Gender, NULL AS DateOfBirth, NULL AS BloodGroup, NULL AS HouseNumber, NULL AS Street, NULL AS City, NULL AS Province, NULL AS Country, NULL AS AgeAtCrime, CC.*
-FROM CloseContacts AS CC
+FROM UV_CLOSECONTACT AS CC
 WHERE CC.VictimID IS NULL);
 
 
@@ -209,18 +234,6 @@ WHERE c.Current_status = 'Open';
 
 
 -- 13.Nested Query with Division :
-SELECT c.CrimeID
-FROM Crime c
-WHERE NOT EXISTS (
-    SELECT v.VictimID
-    FROM Victim v
-    WHERE NOT EXISTS (
-        SELECT vc.VictimID
-        FROM VictimCrime vc
-        WHERE vc.CrimeID = c.CrimeID
-        AND vc.VictimID = v.VictimID
-    )
-);
 
 
 
