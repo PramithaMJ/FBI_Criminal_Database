@@ -22,6 +22,87 @@ SELECT * FROM criminal_DBMS.Witness;
 -- Retrieve all records from the CRIMINAL table:
 SELECT * FROM CRIMINAL;
 
+-- Project Operation: Retrieve only the Criminal Name and Nationality from the CRIMINAL table.
+SELECT Criminal_name, Nationality FROM CRIMINAL;
+
+-- Cartesian Product Operation: Retrieve a Cartesian product of Criminals and Crimes, showing all possible combinations.
+SELECT Criminal_name, CrimeID FROM CRIMINAL, Crime;
+
+-- Creating a User View: Create a view named "HighSecurityJails" that shows the names and locations of jails with a "High Security" level.
+CREATE VIEW HighSecurityJails AS
+SELECT Jail_name, Location
+FROM JAIL
+WHERE Security_level = 'High Security';
+
+-- Renaming Operation: Retrieve the Criminal ID and Alias, but rename Alias as "Nickname."
+SELECT Criminal_ID, Alias AS Nickname FROM CRIMINAL;
+
+-- Aggregation Function (Average): Calculate and retrieve the average age of criminals.
+SELECT AVG(Age) AS AverageAge FROM CRIMINAL;
+
+-- Find the crimes that occurred in a specific city and their respective criminal names:
+SELECT CR.Description, CR.Location, C.Criminal_name
+FROM Crime AS CR
+JOIN CRIMINAL AS C ON CR.Criminal_ID = C.Criminal_ID
+WHERE CR.Location LIKE '%Los Angeles%';
+
+
+-- Advance queries
+-- Union:
+SELECT Criminal_name FROM CRIMINAL
+UNION
+SELECT WitnessName FROM Witness;
+
+-- Intersection:
+
+
+-- Division:
+SELECT VictimID
+FROM Victim
+WHERE VictimID NOT IN (
+    SELECT VictimID
+    FROM VictimCrime
+    WHERE CrimeID NOT IN (
+        SELECT CrimeID
+        FROM Crime
+        WHERE Type = 'Robbery'
+    )
+);
+
+-- Inner Join with Aggregation
+-- no data
+SELECT C.Criminal_name, COUNT(*) AS TotalCrimes
+FROM CRIMINAL AS C
+JOIN Crime AS CR ON C.Criminal_ID = CR.Criminal_ID
+GROUP BY C.Criminal_name
+HAVING TotalCrimes > 5;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- ------------------------------------------------------------------------------------
 -- Get a list of unique nationalities from the CRIMINAL table:
 SELECT DISTINCT Nationality FROM CRIMINAL;
 
@@ -65,11 +146,7 @@ FROM CRIMINAL AS C
 LEFT JOIN Crime AS CR ON C.Criminal_ID = CR.Criminal_ID
 GROUP BY C.Criminal_name;
 
--- Find the crimes that occurred in a specific city and their respective criminal names:
-SELECT CR.Description, CR.Location, C.Criminal_name
-FROM Crime AS CR
-JOIN CRIMINAL AS C ON CR.Criminal_ID = C.Criminal_ID
-WHERE CR.Location LIKE '%Los Angeles%';
+
 
 -- Retrieve the total number of crimes reported by year:
 SELECT YEAR(DateTime) AS Year, COUNT(*) AS TotalCrimes
