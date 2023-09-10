@@ -202,16 +202,28 @@ WHERE CrimeDate > (
 );
 
 -- 12.Nested Query with Inner Join :
-SELECT V.VictimID, V.FirstName, V.LastName, VC.CrimeID, C.CrimeDescription
-FROM Victim AS V
-INNER JOIN VictimCrime AS VC ON V.VictimID = VC.VictimID
-INNER JOIN Crime AS C ON VC.CrimeID = C.CrimeID
-WHERE V.City = 'Los Angeles';
-
-
+SELECT c.Case_ID, c.Current_status, a.Criminal_ID
+FROM CASES c
+INNER JOIN ARRESTED_CRIMINALS a ON c.Case_ID = a.Case_Id
+WHERE c.Current_status = 'Open';
 
 
 -- 13.Nested Query with Division :
+SELECT c.CrimeID
+FROM Crime c
+WHERE NOT EXISTS (
+    SELECT v.VictimID
+    FROM Victim v
+    WHERE NOT EXISTS (
+        SELECT vc.VictimID
+        FROM VictimCrime vc
+        WHERE vc.CrimeID = c.CrimeID
+        AND vc.VictimID = v.VictimID
+    )
+);
+
+
+
 
 
 -- 14. Get the total number of crimes committed by each criminal:
@@ -347,6 +359,18 @@ LIMIT 1;
 
 
 
+-- nested query 
+SELECT c.CrimeID
+FROM Crime c
+INNER JOIN (
+    SELECT c.CrimeID, cr.Criminal_ID
+    FROM Crime c
+    JOIN Criminal cr ON c.Criminal_ID = cr.Criminal_ID
+    WHERE cr.Current_status = 'In custody'
+) AS InCustodyCases ON c.Criminal_ID = InCustodyCases.Criminal_ID;
+
+
+
 -- Inner Join with Aggregation
 -- no data
 SELECT C.Criminal_name, COUNT(*) AS TotalCrimes
@@ -354,3 +378,5 @@ FROM CRIMINAL AS C
 JOIN Crime AS CR ON C.Criminal_ID = CR.Criminal_ID
 GROUP BY C.Criminal_name
 HAVING TotalCrimes > 5;
+
+
