@@ -1,6 +1,6 @@
--- Create a database called "criminal_DBMS" and use it
-CREATE DATABASE IF NOT EXISTS criminal_DBMS;
-USE criminal_DBMS;
+-- Create a database called "FBI_Criminal_Database" and use it
+CREATE DATABASE IF NOT EXISTS FBI_Criminal_Database;
+USE FBI_Criminal_Database;
 
 -- Create the CRIMINAL table
 CREATE TABLE IF NOT EXISTS CRIMINAL (
@@ -1250,5 +1250,5 @@ DELETE FROM JAIL
 WHERE Case_Id = 'CASE009' AND Criminal_ID = 'C1007';
 
 
--- DROP DATABASE criminal_DBMS;
+-- DROP DATABASE FBI_Criminal_Database;
 
