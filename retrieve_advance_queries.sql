@@ -130,7 +130,7 @@ FROM Victim AS V
 INNER JOIN VictimCrime AS VC ON V.VictimID = VC.VictimID
 INNER JOIN Crime AS C ON VC.CrimeID = C.CrimeID;
 
--- 6.Natural Join (CloseContacts and CloseContactsDetails):
+-- 6.Natural Join :
 
 
 -- 7.Left Outer Join 
@@ -152,31 +152,81 @@ RIGHT JOIN Victim AS V ON V.VictimID = VC.VictimID;
 
 
 -- 9.Full Outer Join (Victims and VictimContact):
+-- Retrieve all victims and their close contacts with a UNION of LEFT JOINs
+/*
+SELECT V.*, CC.*
+FROM Victim AS V
+FULL OUTER JOIN CloseContacts AS CC
+ON V.VictimID = CC.VictimID;
+*/
 
--- Nested Queries (Combined with Other Operations):
+(SELECT V.*, CC.*
+FROM Victim AS V
+LEFT JOIN CloseContacts AS CC
+ON V.VictimID = CC.VictimID)
+UNION
+-- Retrieve close contacts without corresponding victims
+(SELECT NULL AS VictimID, NULL AS Statement, NULL AS Description, NULL AS Gender, NULL AS DateOfBirth, NULL AS BloodGroup, NULL AS HouseNumber, NULL AS Street, NULL AS City, NULL AS Province, NULL AS Country, NULL AS AgeAtCrime, CC.*
+FROM CloseContacts AS CC
+WHERE CC.VictimID IS NULL);
 
--- 10.Nested Query with Union (Combining Victims and Criminals in a City):
+
+-- 10.Nested Queries (Combined with Other Operations):
+
+-- Find the average age of victims who witnessed crimes in each city
+SELECT City, AVG(AgeAtCrime) AS AvgAge
+FROM (
+    SELECT V.City, V.AgeAtCrime
+    FROM Victim AS V
+    INNER JOIN VictimCrime AS VC ON V.VictimID = VC.VictimID
+) AS Subquery
+GROUP BY City;
+
+-- Find victims whose age at the time of the crime is greater than the average age of all victims
+SELECT VictimID, AgeAtCrime
+FROM Victim
+WHERE AgeAtCrime > (
+    SELECT AVG(AgeAtCrime)
+    FROM Victim
+);
 
 
--- 11.Nested Query with Inner Join (Victims with Crime Details):
+
+-- 11.Nested Query with Union (Find crimes that occurred after a specific date)
+SELECT CrimeID, CrimeDescription, CrimeDate
+FROM Crime
+WHERE CrimeDate > (
+    SELECT MAX(CrimeDate)
+    FROM Crime
+    WHERE Type = 'Murder'
+);
+
+-- 12.Nested Query with Inner Join :
+SELECT V.VictimID, V.FirstName, V.LastName, VC.CrimeID, C.CrimeDescription
+FROM Victim AS V
+INNER JOIN VictimCrime AS VC ON V.VictimID = VC.VictimID
+INNER JOIN Crime AS C ON VC.CrimeID = C.CrimeID
+WHERE V.City = 'Los Angeles';
 
 
--- 12.Nested Query with Division (Victims who witnessed all Crimes in a City):
 
 
--- 13. Get the total number of crimes committed by each criminal:
+-- 13.Nested Query with Division :
+
+
+-- 14. Get the total number of crimes committed by each criminal:
 SELECT C.Criminal_name, COUNT(*) AS TotalCrimes
 FROM CRIMINAL AS C
 LEFT JOIN Crime AS CR ON C.Criminal_ID = CR.Criminal_ID
 GROUP BY C.Criminal_name;
 
--- 14. Retrieve the total number of crimes reported by year:
+-- 15. Retrieve the total number of crimes reported by year:
 SELECT YEAR(DateTime) AS Year, COUNT(*) AS TotalCrimes
 FROM Crime
 GROUP BY Year
 ORDER BY Year;
 
--- 15. List the criminals with their ages who have committed more than 5 crimes:
+-- 16. List the criminals with their ages who have committed more than 5 crimes:
 -- no data----------------------------------------------------------------
 SELECT Criminal_name, Age
 FROM CRIMINAL
@@ -187,7 +237,7 @@ WHERE Criminal_ID IN (
     HAVING COUNT(*) > 2
 );
 
--- 16. -- Create a table that shows the crimes with the highest number of witnesses, including their descriptions and the witness count:
+-- 17. -- Create a table that shows the crimes with the highest number of witnesses, including their descriptions and the witness count:
 SELECT CR.Description, COUNT(CWV.WitnessID) AS NumberOfWitnesses
 FROM Crime AS CR
 LEFT JOIN CrimeWitnessVictim AS CWV ON CR.CrimeID = CWV.CrimeID
@@ -294,16 +344,6 @@ SELECT CR.Description, LENGTH(CR.Description) AS DescriptionLength
 FROM Crime AS CR
 ORDER BY DescriptionLength ASC
 LIMIT 1;
-
-
-
-
-
-
-
-
-
-
 
 
 
