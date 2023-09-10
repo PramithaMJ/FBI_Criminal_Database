@@ -701,6 +701,23 @@ VALUES ('CR1009', 'Assault on a public transport', 'Pending', '606 Sequoia St, L
 INSERT INTO Crime (CrimeID, Description, Status, Location, DateTime, Type, Criminal_ID)
 VALUES ('CR1011', 'Fraudulent activities', 'Solved', '707 Spruce St, San Diego', '2023-07-15 14:50:00', 'Fraud', 'C1011');
 
+-- Entry 11
+INSERT INTO Crime (CrimeID, Description, Status, Location, DateTime, Type, Criminal_ID)
+VALUES ('CR1013', 'Drug trafficking', 'Solved', '606 Sequoia St, Los Angeles', '2020-07-15 14:50:00', 'Drug Offense', 'C1013');
+
+
+-- Entry 12
+INSERT INTO Crime (CrimeID, Description, Status, Location, DateTime, Type, Criminal_ID)
+VALUES ('CR1014', 'Homicide in a residential area', 'Pending', '808 Oakwood Lane, Chicago', '2023-09-20 21:30:00', 'Murder', 'C1014');
+
+-- Entry 13
+INSERT INTO Crime (CrimeID, Description, Status, Location, DateTime, Type, Criminal_ID)
+VALUES ('CR1016', 'Fatal stabbing in a bar fight', 'Solved', '505 Elm Street, New York', '2023-09-18 02:15:00', 'Murder', 'C1016');
+
+-- Entry 14
+INSERT INTO Crime (CrimeID, Description, Status, Location, DateTime, Type, Criminal_ID)
+VALUES ('CR1017', 'Drive-by shooting incident', 'Pending', '303 Pine Avenue, Los Angeles', '2023-09-22 17:45:00', 'Murder', 'C1017');
+
 
 
 -- Update data in the Crime table
@@ -828,7 +845,13 @@ VALUES
     ('V1007', 'I was jogging in the park and saw the crime happening.', 'Eye-witness while jogging', 'F', '1995-03-18', 'A-', '404', 'Elm Ave', 'Phoenix', 'Arizona', 'USA', 27),
     ('V1008', 'I saw the suspect entering the building before the incident.', 'Witnessed the suspect before the crime.', 'M', '1992-09-05', 'AB+', '505', 'Redwood Rd', 'Seattle', 'Washington', 'USA', 29),
     ('V1009', 'I was walking my dog when I heard gunshots.', 'Heard gunshots during a walk.', 'F', '1987-12-28', 'O-', '606', 'Spruce St', 'Denver', 'Colorado', 'USA', 34),
-    ('V1010', 'I saw the entire incident unfold in front of my shop.', 'Clear eye-witness to the crime.', 'M', '1980-01-10', 'B-', '707', 'Maple St', 'Portland', 'Oregon', 'USA', 43);
+    ('V1010', 'I saw the entire incident unfold in front of my shop.', 'Clear eye-witness to the crime.', 'M', '1980-01-10', 'B-', '707', 'Maple St', 'Portland', 'Oregon', 'USA', 43),
+    ('V1014', 'I was present at the scene during the murder.', 'Witnessed a violent murder incident.', 'M', '1990-05-15', 'O+', '789 Oak St', 'Pineville Rd', 'Los Angeles', 'California', 'USA', 33),
+	('V1016', 'I heard gunshots and saw the victim fall.', 'Saw a fatal stabbing incident.', 'F', '1985-09-10', 'B-', '505 Elm Street', 'Maple Ave', 'New York', 'New York', 'USA', 38),
+	('V1017', 'I saw a car drive by and shots were fired.', 'Witnessed a drive-by shooting incident.', 'M', '1993-02-28', 'A-', '303 Pine Avenue', 'Cedar St', 'Los Angeles', 'California', 'USA', 30),
+    ('V1013', 'I was present when a drug deal went wrong.', 'Witnessed a drug-related incident.', 'F', '1996-03-20', 'AB+', '123 Main St', 'Sunset Blvd', 'Miami', 'Florida', 'USA', 27);
+
+
 
 
 -- Update Victim table entries
@@ -902,6 +925,8 @@ SET Statement = 'I was inside a coffee shop when I heard gunshots.',
     AgeAtCrime = 25
 WHERE VictimID = 'V1005';
 
+
+
 -- Delete Victim table entries
 DELETE FROM Victim WHERE VictimID = 'V1001';
 DELETE FROM Victim WHERE VictimID = 'V1002';
@@ -916,7 +941,11 @@ VALUES
     ('V1007', 'CR1007'),
     ('V1008', 'CR1008'),
     ('V1009', 'CR1009'),
-    ('V1010', 'CR1011');
+    ('V1010', 'CR1011'),
+    ('V1013','CR1013'),
+    ('V1004','CR1014'),
+    ('V1016','CR1016'),
+    ('V1017','CR1017');
 
 
 /*
