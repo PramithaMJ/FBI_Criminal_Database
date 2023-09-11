@@ -1097,7 +1097,7 @@ WHERE Case_Id = 'CASE009' AND Criminal_ID = 'C1007';
 -- Data retrieve and advance queries
 
 -- Table Retrieves
-SELECT * FROM criminal_DBMS.ARRESTED_CRIMINALS;
+SELECT * FROM FBI_Criminal_Database.ARRESTED_CRIMINALS;
 SELECT * FROM FBI_Criminal_Database.CASES;
 SELECT * FROM FBI_Criminal_Database.CloseContacts;
 SELECT * FROM FBI_Criminal_Database.Crime;
@@ -1113,7 +1113,7 @@ SELECT * FROM FBI_Criminal_Database.Victim;
 SELECT * FROM FBI_Criminal_Database.VictimCloseContacts;
 SELECT * FROM FBI_Criminal_Database.VictimContact;
 SELECT * FROM FBI_Criminal_Database.VictimCrime;
-SELECT * FROM criminal_DBMS.Witness;
+SELECT * FROM FBI_Criminal_Database.Witness;
 
 -- Simple Queries
 
