@@ -1090,5 +1090,3 @@ WHERE Case_Id = 'CASE007' AND Criminal_ID = 'C1006';
 
 DELETE FROM JAIL
 WHERE Case_Id = 'CASE009' AND Criminal_ID = 'C1007';
-
-
