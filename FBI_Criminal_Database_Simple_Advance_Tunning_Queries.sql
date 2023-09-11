@@ -76,6 +76,18 @@ SELECT Criminal_name, Alias
 FROM CRIMINAL
 WHERE Alias IS NOT NULL;
 
+-- 11. Retrieve the total number of crimes reported by year:
+SELECT YEAR(DateTime) AS Year, COUNT(*) AS TotalCrimes
+FROM Crime
+GROUP BY Year
+ORDER BY Year;
+
+-- 12. Retrieve the most common blood group among criminals:
+SELECT Blood_group, COUNT(*) AS Count
+FROM CRIMINAL
+GROUP BY Blood_group
+ORDER BY Count DESC
+LIMIT 1;
 -- =======================================================================
 
 -- Advance queries
@@ -195,6 +207,14 @@ UNION
 FROM UV_CLOSECONTACT AS CC
 WHERE CC.VictimID IS NULL);
 
+-- 
+SELECT V.*, VC.*
+FROM UV_VICTIM_CONTACT AS VC
+RIGHT JOIN UV_VICTIM AS V ON V.VictimID = VC.VictimID;
+
+
+
+
 
 -- 10.Nested Queries (Combined with Other Operations):
 
@@ -207,7 +227,7 @@ FROM (
 ) AS Subquery
 GROUP BY City;
 
--- Find victims whose age at the time of the crime is greater than the average age of all victims
+-- 11.Find victims whose age at the time of the crime is greater than the average age of all victims
 SELECT VictimID, AgeAtCrime
 FROM Victim
 WHERE AgeAtCrime > (
@@ -216,77 +236,52 @@ WHERE AgeAtCrime > (
 );
 
 
+-- Advance query
 
--- 11.Nested Query with Union (Find crimes that occurred after a specific date)
-SELECT CrimeID, CrimeDescription, CrimeDate
-FROM Crime
-WHERE CrimeDate > (
-    SELECT MAX(CrimeDate)
-    FROM Crime
-    WHERE Type = 'Murder'
-);
-
--- 12.Nested Query with Inner Join :
-SELECT c.Case_ID, c.Current_status, a.Criminal_ID
-FROM CASES c
-INNER JOIN ARRESTED_CRIMINALS a ON c.Case_ID = a.Case_Id
-WHERE c.Current_status = 'Open';
-
--- 13. nested query with join
-SELECT c.CrimeID
-FROM Crime c
-INNER JOIN (
-    SELECT c.CrimeID, cr.Criminal_ID
-    FROM Crime c
-    JOIN Criminal cr ON c.Criminal_ID = cr.Criminal_ID
-    WHERE cr.Current_status = 'In custody'
-) AS InCustodyCases ON c.Criminal_ID = InCustodyCases.Criminal_ID;
-
-
--- 14. Get the total number of crimes committed by each criminal:
+-- 01. Get the total number of crimes committed by each criminal:
 SELECT C.Criminal_name, COUNT(*) AS TotalCrimes
 FROM CRIMINAL AS C
 LEFT JOIN Crime AS CR ON C.Criminal_ID = CR.Criminal_ID
 GROUP BY C.Criminal_name;
 
--- 15. Retrieve the total number of crimes reported by year:
-SELECT YEAR(DateTime) AS Year, COUNT(*) AS TotalCrimes
-FROM Crime
-GROUP BY Year
-ORDER BY Year;
 
--- 16. List the criminals with their ages who have committed more than 5 crimes:
--- no data----------------------------------------------------------------
-SELECT Criminal_name, Age
-FROM CRIMINAL
-WHERE Criminal_ID IN (
-    SELECT Criminal_ID
-    FROM Crime
-    GROUP BY Criminal_ID
-    HAVING COUNT(*) > 2
-);
 
--- 17. -- Create a table that shows the crimes with the highest number of witnesses, including their descriptions and the witness count:
-SELECT CR.Description, COUNT(CWV.WitnessID) AS NumberOfWitnesses
-FROM Crime AS CR
-LEFT JOIN CrimeWitnessVictim AS CWV ON CR.CrimeID = CWV.CrimeID
-GROUP BY CR.CrimeID, CR.Description
-HAVING NumberOfWitnesses = (
-    SELECT MAX(NumberOfWitnesses)
-    FROM (
-        SELECT CR.CrimeID, COUNT(CWV.WitnessID) AS NumberOfWitnesses
-        FROM Crime AS CR
-        LEFT JOIN CrimeWitnessVictim AS CWV ON CR.CrimeID = CWV.CrimeID
-        GROUP BY CR.CrimeID
-    ) AS MaxWitnesses
-);
+-- 02.Generate a table that shows the number of crimes reported by each witness along with their names and contact numbers:
+SELECT W.WitnessName, W.ContactNumber, COUNT(CWV.CrimeID) AS TotalCrimes
+FROM Witness AS W
+LEFT JOIN CrimeWitnessVictim AS CWV ON W.WitnessID = CWV.WitnessID
+GROUP BY W.WitnessName, W.ContactNumber;
 
--- 18. Retrieve the most common blood group among criminals:
-SELECT Blood_group, COUNT(*) AS Count
-FROM CRIMINAL
-GROUP BY Blood_group
-ORDER BY Count DESC
-LIMIT 1;
+
+-- 03.Get the criminals with aliases who have committed crimes in multiple cities:
+-- no datas----------------------------------------------------------------------
+SELECT C.Criminal_name, C.Alias, COUNT(DISTINCT CR.Location) AS NumberOfCities
+FROM CRIMINAL AS C
+JOIN Crime AS CR ON C.Criminal_ID = CR.Criminal_ID
+WHERE C.Alias IS NOT NULL
+GROUP BY C.Criminal_name, C.Alias
+HAVING NumberOfCities > 1;
+
+-- 04.Retrieve a table showing the top 10 criminals with the highest number of crimes, including their names and the count of crimes:
+SELECT C.Criminal_name, COUNT(*) AS TotalCrimes
+FROM CRIMINAL AS C
+JOIN Crime AS CR ON C.Criminal_ID = CR.Criminal_ID
+GROUP BY C.Criminal_name
+ORDER BY TotalCrimes DESC
+LIMIT 10;
+
+-- no data
+SELECT C.Criminal_name, COUNT(*) AS TotalCrimes
+FROM CRIMINAL AS C
+JOIN Crime AS CR ON C.Criminal_ID = CR.Criminal_ID
+GROUP BY C.Criminal_name
+HAVING TotalCrimes > 5;
+
+-- 
+SELECT DISTINCT Criminal_ID
+FROM ARRESTED_CRIMINALS AS AC
+JOIN CASES AS C ON AC.Case_Id = C.Case_ID
+WHERE C.Current_status = 'Open';
 
 
 -- 19. -- Retrieve a table displaying the top 5 cities with the highest and lowest average age of criminals:
@@ -309,28 +304,76 @@ UNION ALL
 )
 ORDER BY AverageAge DESC;
 
--- 20.Generate a table that shows the number of crimes reported by each witness along with their names and contact numbers:
-SELECT W.WitnessName, W.ContactNumber, COUNT(CWV.CrimeID) AS TotalCrimes
-FROM Witness AS W
-LEFT JOIN CrimeWitnessVictim AS CWV ON W.WitnessID = CWV.WitnessID
-GROUP BY W.WitnessName, W.ContactNumber;
-
--- 21.Get the criminals with aliases who have committed crimes in multiple cities:
--- no datas----------------------------------------------------------------------
-SELECT C.Criminal_name, C.Alias, COUNT(DISTINCT CR.Location) AS NumberOfCities
+-- 26.Retrieve the criminals who have been rehabilitated and their rehabilitation duration:
+SELECT C.Criminal_name, R.Institution_name, R.Duration_months
 FROM CRIMINAL AS C
-JOIN Crime AS CR ON C.Criminal_ID = CR.Criminal_ID
-WHERE C.Alias IS NOT NULL
-GROUP BY C.Criminal_name, C.Alias
-HAVING NumberOfCities > 1;
+JOIN REHABILITATION AS R ON C.Criminal_ID = R.Criminal_ID
+WHERE R.Institution_name IS NOT NULL;
 
--- 22.Retrieve a table showing the top 10 criminals with the highest number of crimes, including their names and the count of crimes:
-SELECT C.Criminal_name, COUNT(*) AS TotalCrimes
-FROM CRIMINAL AS C
-JOIN Crime AS CR ON C.Criminal_ID = CR.Criminal_ID
-GROUP BY C.Criminal_name
-ORDER BY TotalCrimes DESC
-LIMIT 10;
+
+SELECT V.*, VC.*
+FROM UV_VICTIM_CONTACT AS VC
+RIGHT JOIN UV_VICTIM AS V ON V.VictimID = VC.VictimID;
+
+
+(select Criminal_name,Nationality,Age from fbi_criminal_database.criminal where Nationality = 'Japanese') 
+union(select Criminal_name,Nationality,Age from fbi_criminal_database.criminal where Age = 30);
+
+(select Criminal_name,Age,Gender from fbi_criminal_database.criminal where Gender = 'Male') 
+union(select Criminal_name,Age,Gender from fbi_criminal_database.criminal where Age = 30);
+
+
+-- Nested Query
+
+
+-- 17. -- Create a table that shows the crimes with the highest number of witnesses, including their descriptions and the witness count:
+SELECT CR.Description, COUNT(CWV.WitnessID) AS NumberOfWitnesses
+FROM Crime AS CR
+LEFT JOIN CrimeWitnessVictim AS CWV ON CR.CrimeID = CWV.CrimeID
+GROUP BY CR.CrimeID, CR.Description
+HAVING NumberOfWitnesses = (
+    SELECT MAX(NumberOfWitnesses)
+    FROM (
+        SELECT CR.CrimeID, COUNT(CWV.WitnessID) AS NumberOfWitnesses
+        FROM Crime AS CR
+        LEFT JOIN CrimeWitnessVictim AS CWV ON CR.CrimeID = CWV.CrimeID
+        GROUP BY CR.CrimeID
+    ) AS MaxWitnesses
+);
+
+
+-- 13. nested query with join
+SELECT c.CrimeID
+FROM Crime c
+INNER JOIN (
+    SELECT c.CrimeID, cr.Criminal_ID
+    FROM Crime c
+    JOIN Criminal cr ON c.Criminal_ID = cr.Criminal_ID
+    WHERE cr.Current_status = 'In custody'
+) AS InCustodyCases ON c.Criminal_ID = InCustodyCases.Criminal_ID;
+
+
+
+
+
+-- 12.Nested Query with Inner Join :
+SELECT c.Case_ID, c.Current_status, a.Criminal_ID
+FROM CASES c
+INNER JOIN ARRESTED_CRIMINALS a ON c.Case_ID = a.Case_Id
+WHERE c.Current_status = 'Open';
+
+-- 16. List the criminals with their ages who have committed more than 5 crimes:
+-- no data----------------------------------------------------------------
+SELECT Criminal_name, Age
+FROM CRIMINAL
+WHERE Criminal_ID IN (
+    SELECT Criminal_ID
+    FROM Crime
+    GROUP BY Criminal_ID
+    HAVING COUNT(*) > 2
+);
+
+
 
 -- 23.Create a table that displays the average age of criminals by gender and blood group:
 SELECT Gender, Blood_group, AVG(Age) AS AverageAge
@@ -350,12 +393,6 @@ ORDER BY Count DESC
 LIMIT 1;
 
 
--- 26.Retrieve the criminals who have been rehabilitated and their rehabilitation duration:
-SELECT C.Criminal_name, R.Institution_name, R.Duration_months
-FROM CRIMINAL AS C
-JOIN REHABILITATION AS R ON C.Criminal_ID = R.Criminal_ID
-WHERE R.Institution_name IS NOT NULL;
-
 -- 27.Find the cities with the highest number of reported crimes:
 SELECT CR.Location, COUNT(*) AS NumberOfCrimes
 FROM Crime AS CR
@@ -374,16 +411,8 @@ FROM Crime AS CR
 ORDER BY DescriptionLength ASC
 LIMIT 1;
 
-
-
-
 -- 29. Inner Join with Aggregation
--- no data
-SELECT C.Criminal_name, COUNT(*) AS TotalCrimes
-FROM CRIMINAL AS C
-JOIN Crime AS CR ON C.Criminal_ID = CR.Criminal_ID
-GROUP BY C.Criminal_name
-HAVING TotalCrimes > 5;
+
 
 select Criminal_name,Nationality,Age from 
 fbi_criminal_database.criminal 
@@ -397,25 +426,10 @@ FROM ARRESTED_CRIMINALS AS AC
 JOIN CASES AS C ON AC.Case_Id = C.Case_ID
 WHERE C.Current_status = 'Open';
 
-SELECT Criminal_ID
-FROM ARRESTED_CRIMINALS AS AC
-JOIN CASES AS C ON AC.Case_Id = C.Case_ID
-WHERE C.Current_status = 'Open';
-
-SELECT AC.Criminal_ID
-FROM ARRESTED_CRIMINALS AS AC
-JOIN CASES AS C ON AC.Case_Id = C.Case_ID
-WHERE C.Current_status = 'Open'
-GROUP BY AC.Criminal_ID;
 
 
-SELECT V.*, VC.*
-FROM UV_VICTIM_CONTACT AS VC
-RIGHT JOIN UV_VICTIM AS V ON V.VictimID = VC.VictimID;
 
 
-(select Criminal_name,Nationality,Age from fbi_criminal_database.criminal where Nationality = 'Japanese') 
-union(select Criminal_name,Nationality,Age from fbi_criminal_database.criminal where Age = 30);
 
-(select Criminal_name,Age,Gender from fbi_criminal_database.criminal where Gender = 'Male') 
-union(select Criminal_name,Age,Gender from fbi_criminal_database.criminal where Age = 30);
+
+-- Tunning
