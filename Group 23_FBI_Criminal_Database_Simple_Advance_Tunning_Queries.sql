@@ -412,10 +412,60 @@ FROM ARRESTED_CRIMINALS AS AC
 JOIN CASES AS C ON AC.Case_Id = C.Case_ID
 WHERE C.Current_status = 'Open';
 
+-- 28.
+select Criminal_name,Age,Gender from 
+fbi_criminal_database.criminal 
+where Gender = 'Male' OR Age = 30;
 
-
-
-
+create index criminal_gender_index using BTREE on criminal(gender);
+create index criminal_age_index using BTREE on criminal(age);
 
 
 -- Tunning
+-- Index Tunning
+
+-- 1. 
+create index BloodGroup_Index using BTREE on criminal(Blood_Group);
+-- 2.
+create unique index DateTime_Index using BTREE on crime(DateTime);
+
+-- 3.
+create index Gender_Index using BTREE on criminal(Gender);  
+
+-- 4.
+create index CrimeLocation_Index using BTREE on crime(Location);
+
+-- 5.
+create index CriminalAlias_Index using BTREE on criminal(Alias);
+
+-- 6.
+create index RehabilitationCriminalID_Index using BTREE on rehabilitation(Criminal_ID);
+
+-- 7.
+create index VictimcontactVictimID_Index using BTREE on victimcontact(VictimID);
+
+-- Query Tunning
+
+-- 8.
+CREATE VIEW InCustodyCases AS
+SELECT c.CrimeID, cr.Criminal_ID
+FROM Crime c
+JOIN Criminal cr ON c.Criminal_ID = cr.Criminal_ID
+WHERE cr.Current_status = 'In custody';
+
+SELECT c.CrimeID
+FROM Crime c
+INNER JOIN InCustodyCases ic ON c.Criminal_ID = ic.Criminal_ID;
+
+-- 9.
+(select Criminal_name,Age,Gender from fbi_criminal_database.criminal where Gender = 'Male') 
+union
+(select Criminal_name,Age,Gender from fbi_criminal_database.criminal where Age = 30);
+
+-- 10.
+SELECT AC.Criminal_ID
+FROM ARRESTED_CRIMINALS AS AC
+JOIN CASES AS C ON AC.Case_Id = C.Case_ID
+WHERE C.Current_status = 'Open'
+GROUP BY AC.Criminal_ID;
+
